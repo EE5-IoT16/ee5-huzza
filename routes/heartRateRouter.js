@@ -5,7 +5,8 @@ var db = require("../database")
 
 router.get('/', function(req, res, next) {
   res.send('Heart rate get method called.');
-  queryString = 'SELECT * FROM User';
+  queryString = 'SELECT * FROM "HeartRate"';
+  console.log(queryString);
   db.query(queryString);
 });
 
