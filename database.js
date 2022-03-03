@@ -7,6 +7,13 @@ const sql = mysql.createConnection({
   database: 'a21iot16'
 });
 
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
 function connect(){
   sql.connect((err) => {
     if (err) throw err;
