@@ -1,16 +1,21 @@
+const { query } = require('express');
 var express = require('express');
 var router = express.Router();
 var db = require("../database")
 
 router.get('/', function(req, res, next) {
   res.send('Heart rate get method called.');
-  db.findAll({type: "heartrate"}); //TODO: limit returned data
+  queryString = 'SELECT * FROM User';
+  db.query(queryString);
 });
 
 router.post('/', function(req, res, next) {
     res.send('Heart rate post method called.');
-    const doc = req.query;
-    db.insertOne(doc);
+    const bpm = req.query.bpm;
+    const ts = req.query.ts;
+    const deviceId = req.query.deviceId;
+    const queryString = "";
+    db.query(queryString);
 });
 
 router.put('/', function(req, res, next) {
