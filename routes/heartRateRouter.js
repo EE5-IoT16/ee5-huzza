@@ -3,13 +3,18 @@ var express = require('express');
 var router = express.Router();
 var db = require("../database")
 
-router.get('/', function(req, res, next) {
-  res.send('Heart rate get method called.');
-  queryString = 'SELECT * FROM User';
-  db.query(queryString);
+router.get('/', function (req, res, next) {
+    res.send('Heart rate get method called.');
+    queryString = 'SELECT * FROM User';
+    await db.query(queryString).then(() => {
+        res.status(200).json({
+            status: 'succes',
+            message: res
+        });
+    }).catch(() => { });
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
     res.send('Heart rate post method called.');
     const bpm = req.query.bpm;
     const ts = req.query.ts;
@@ -18,14 +23,14 @@ router.post('/', function(req, res, next) {
     db.query(queryString);
 });
 
-router.put('/', function(req, res, next) {
+router.put('/', function (req, res, next) {
     res.send('Heart rate put method called.');
     const filterDoc = req.query.type;
     const newDoc = req.query;
     db.update(filterDoc, newDoc)
 });
 
-router.delete('/', function(req, res, next) {
+router.delete('/', function (req, res, next) {
     res.send('Heart rate delete method called.');
 });
 
