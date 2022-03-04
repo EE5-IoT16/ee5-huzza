@@ -1,31 +1,12 @@
-const mysql = require('mysql');
+const { Pool } = require('pg');
 
-const sql = mysql.createConnection({
-  host: 'mysql.studev.groept.be',
-  user: 'a21iot16',
-  password: '7eG8x5Xp',
-  database: 'a21iot16'
+const pool = new Pool({
+  connectionString: "postgres://moyzrfdfaeifpv:bb7254ca8e867367ae8a6d8c41bc1ba2e4111140087a5de8140839f06ae2e990@ec2-52-208-185-143.eu-west-1.compute.amazonaws.com:5432/d7p2ahuv6uogme",
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
-function connect(){
-  sql.connect((err) => {
-    if (err) throw err;
-    console.log('Connected!');
-  });
-}
-
-async function query(queryString){
-  connect();
-
-  sql.query(queryString, (err,rows) => {
-    if(err) throw err;
-    console.log('Data received from Db:');
-    console.log(rows);
-  });
-
-  sql.end((err) => {});
-}
-
 module.exports = {
-  query: query,
+  query: (text, params) => pool.query(text, params),
 }
