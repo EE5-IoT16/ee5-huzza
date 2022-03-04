@@ -1,17 +1,11 @@
-const { query } = require('express');
 var express = require('express');
 var router = express.Router();
 var db = require("../database")
 
-router.get('/', function (req, res, next) {
-    res.send('Heart rate get method called.');
-    queryString = 'SELECT * FROM "HeartRate"';
-    await db.query(queryString).then(() => {
-        res.status(200).json({
-            status: 'succes',
-            message: res
-        });
-    }).catch(() => { });
+router.get('/', async (req, res) =>{
+    const queryString = 'SELECT * FROM "HeartRate"';
+    const {rows} = await db.query(queryString);
+    res.send(rows);
 });
 
 router.post('/', function (req, res, next) {
