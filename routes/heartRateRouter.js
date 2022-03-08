@@ -1,20 +1,26 @@
-var express = require('express');
-var router = express.Router();
-var db = require("../database")
+const express = require('express');
+const router = express.Router();
+const db = require("../database")
+let RouterUtils = require("./route-utils");
 
-router.get('/', async (req, res) =>{
+router.get('/', async (req, res) => {
     const queryString = 'SELECT * FROM "HeartRate"';
-    const {rows} = await db.query(queryString);
+    const { rows } = await db.query(queryString);
     res.send(rows);
 });
 
-router.post('/', function (req, res, next) {
-    res.send('Heart rate post method called.');
+router.post('/', async (req, res) => {
     const bpm = req.query.bpm;
-    const ts = req.query.ts;
+    //There should be a better methodology to this
+    let routerUtils = new RouterUtils();
+    const ts = routerUtils.getTimeStamp();
     const deviceId = req.query.deviceId;
-    const queryString = "";
-    db.query(queryString);
+
+    const queryString = 'INSERT INTO public."HeartRate"("deviceId","bpm","ts")VALUES ($1, $2, $3) RETURNING "id"';
+    const queryValues = [deviceId, bpm, ts];
+
+    const {rows} = await db.query(queryString, queryValues);
+    res.send(rows);
 });
 
 router.put('/', function (req, res, next) {
