@@ -2,7 +2,7 @@
 
 Clone the repository to desired location.
 ```git
-git clone https://github.com/SamuelTocci/EE5.git
+git clone https://github.com/EE5-IoT16/ee5-huzza.git
 ```
 Then cd into the project.
 
