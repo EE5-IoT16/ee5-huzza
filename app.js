@@ -14,6 +14,6 @@ app.use('/accel', accelerometerRouter);
 app.use('/heartRate', heartRateRouter);
 app.use('/gyro', gyroRouter);
 app.use('/temperature', temperatureRouter);
-app.use('/user', temperatureRouter);
+app.use('/user', userRouter);
 
 module.exports = app;
