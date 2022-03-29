@@ -9,6 +9,13 @@ router.get('/', async (req, res) => {
     res.send(rows);
 });
 
+router.get('/:id', async (req, res) => {
+    let queryString = 'SELECT * FROM "Gyroscope"';
+    queryString += "WHERE id=" + req.params.id;
+    const { rows } = await db.query(queryString);
+    res.send(rows);
+});
+
 router.post('/', async (req, res) => {
     const angle = req.query.angle;
     const angularVelocity = req.query.angularVelocity;

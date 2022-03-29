@@ -8,6 +8,13 @@ router.get('/', async(req, res)=>{
     res.send(rows);
 });
 
+router.get('/:id', async(req, res)=>{
+    let queryString = 'SELECT * FROM "User"';
+    queryString += 'WHERE "userId"=' + req.params.id;
+    const {rows} = await db.query(queryString);
+    res.send(rows);
+});
+
 router.post('/', async(req, res)=>{
     const userId = req.query.userId;
     const name = req.query.name;

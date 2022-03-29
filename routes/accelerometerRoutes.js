@@ -3,8 +3,15 @@ var router = express.Router();
 const db = require("../database")
 let RouterUtils = require("./route-utils");
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res, next) => {    
     const queryString = 'SELECT * FROM "Acceleration"';
+    const { rows } = await db.query(queryString);
+    res.send(rows);
+});
+
+router.get('/:id', async (req, res, next) => {    
+    let queryString = 'SELECT * FROM "Acceleration"';
+    queryString += "WHERE id=" + req.params.id;
     const { rows } = await db.query(queryString);
     res.send(rows);
 });
