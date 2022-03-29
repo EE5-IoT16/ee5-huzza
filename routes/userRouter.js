@@ -8,9 +8,9 @@ router.get('/', async(req, res)=>{
     res.send(rows);
 });
 
-router.get('/:id', async(req, res)=>{
+router.get('/:email', async(req, res)=>{
     let queryString = 'SELECT * FROM "User"';
-    queryString += 'WHERE "userId"=' + req.params.id;
+    queryString += ' WHERE email=\'' + req.params.email + "'";
     const {rows} = await db.query(queryString);
     res.send(rows);
 });
