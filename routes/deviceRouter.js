@@ -25,4 +25,12 @@ router.post('/', async(req, res)=>{
     res.send(rows);
 });
 
+router.put('/', function (req, res, next) {
+    res.send('Gyroscope put method called.');
+});
+
+router.delete('/', function (req, res, next) {
+    res.send('Gyroscope delete method called.');
+});
+
 module.exports = router;
