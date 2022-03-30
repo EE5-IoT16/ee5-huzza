@@ -7,6 +7,7 @@ var gyroRouter = require('./routes/gyroRouter');
 var temperatureRouter = require('./routes/temperatureRouter');
 var userRouter = require('./routes/userRouter');
 var errorRouter = require('./routes/errorRouter');
+var deviceRouter = require('./routes/deviceRouter');
 
 var app = express();
 
@@ -16,6 +17,7 @@ app.use('/heartRate', heartRateRouter);
 app.use('/gyro', gyroRouter);
 app.use('/temperature', temperatureRouter);
 app.use('/user', userRouter);
+app.use('/device', deviceRouter);
 
 app.use('*', errorRouter);
 

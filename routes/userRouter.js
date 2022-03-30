@@ -8,6 +8,13 @@ router.get('/', async(req, res)=>{
     res.send(rows);
 });
 
+router.get('/:email', async(req, res)=>{
+    let queryString = 'SELECT * FROM "User"';
+    queryString += ' WHERE email=\'' + req.params.email + "'";
+    const {rows} = await db.query(queryString);
+    res.send(rows);
+});
+
 router.post('/', async(req, res)=>{
     const userId = req.query.userId;
     const name = req.query.name;
