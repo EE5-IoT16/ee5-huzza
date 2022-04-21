@@ -26,11 +26,11 @@ router.post('/', async(req, res)=>{
 });
 
 router.put('/', function (req, res, next) {
-    res.send('Gyroscope put method called.');
+    res.send('Device put method called.');
 });
 
 router.delete('/', function (req, res, next) {
-    res.send('Gyroscope delete method called.');
+    res.send('Device delete method called.');
 });
 
 module.exports = router;
