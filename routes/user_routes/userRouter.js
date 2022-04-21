@@ -17,12 +17,14 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const deviceId = req.query.deviceId;
+    const name = req.query.name;
+    const surname = req.query.surname;
 
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getTimeStamp();
 
-    const queryString = 'INSERT INTO public."User"("userId", "ts") VALUES ($1, $2) RETURNING "userId"';
-    const queryValues = [deviceId, ts];
+    const queryString = 'INSERT INTO public."User"("userId","name" ,"surname", "ts") VALUES ($1, $2, $3, $4) RETURNING "userId"';
+    const queryValues = [deviceId, name, surname, ts];
 
     const { rows } = await db.query(queryString, queryValues);
     res.send(rows);
