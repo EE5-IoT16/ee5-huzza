@@ -1,35 +1,40 @@
 const express = require('express');
 const router = express.Router();
-const db = require("../database")
+const db = require("../../database")
 
-router.get('/', async(req, res)=>{
+router.get('/', async (req, res) => {
     const queryString = 'SELECT * FROM "UserPhysicalData"';
-    const {rows} = await db.query(queryString);
+    const { rows } = await db.query(queryString);
     res.send(rows);
 });
 
-router.get('/:userId', async(req, res)=>{
+router.get('/:userId', async (req, res) => {
     let queryString = 'SELECT * FROM "UserPhysicalData"';
     queryString += 'WHERE "userId"=' + req.params.userId;
-    const {rows} = await db.query(queryString);
+    const { rows } = await db.query(queryString);
     res.send(rows);
 });
 
-router.post('/', async(req, res)=>{
+router.post('/', async (req, res) => {
     const userId = req.query.userId;
     const weight = req.query.weight;
     const height = req.query.height;
     const age = req.query.age;
     const gender = req.query.gender;
+    const bmi = req.query.bmi;
+    const rmr = req.query.rmr;
 
-    const queryString = 'INSERT INTO public."UserPhysicalData"("userId", "weight", "height", "age", "gender") VALUES ($1, $2, $3, $4, $5) RETURNING "deviceId"';
-    const queryValues = [userId, weight, height, age, gender];
+    let routerUtils = new RouterUtils();
+    const ts = routerUtils.getTimeStamp();
 
-    const {rows} = await db.query(queryString, queryValues);
+    const queryString = 'INSERT INTO public."UserPhysicalData"("userId", "weight", "height", "age", "gender", "bmi", "rmr", "ts") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING "deviceId"';
+    const queryValues = [userId, weight, height, age, gender, bmi, rmr, ts];
+
+    const { rows } = await db.query(queryString, queryValues);
     res.send(rows);
 });
 
-router.put('/', function (req, res) {
+router.put('/', async (req, res) => {
     let userId, weight, height, age, gender;
     let queryValues = [];
     let parameterCounter = 1;
@@ -73,11 +78,11 @@ router.put('/', function (req, res) {
             const { response } = await db.query(queryString, queryValues);
             returnValue = response;
         }
-        else{
+        else {
             returnValue = "No value is changed.";
         }
     }
-    else{
+    else {
         returnValue = "userId is not provided.";
     }
 

@@ -1,43 +1,46 @@
 const express = require('express');
 const router = express.Router();
-const db = require("../database")
+const db = require("../../database")
 
 router.get('/', async (req, res) => {
-    const queryString = 'SELECT * FROM "User"';
+    const queryString = 'SELECT * FROM "Profile"';
     const { rows } = await db.query(queryString);
     res.send(rows);
 });
 
 router.get('/:email', async (req, res) => {
-    let queryString = 'SELECT * FROM "User"';
+    let queryString = 'SELECT * FROM "Profile"';
     queryString += ' WHERE email=\'' + req.params.email + "'";
     const { rows } = await db.query(queryString);
     res.send(rows);
 });
 
 router.post('/', async (req, res) => {
-    const userId = req.query.userId;
+    const profileId = req.query.profileId;
     const name = req.query.name;
     const surname = req.query.surname;
     const email = req.query.email;
     const password = req.query.password;
     const salt = req.query.salt;
 
-    const queryString = 'INSERT INTO public."User"("userId", "name", "surname", "email", "password", "salt") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "userId"';
-    const queryValues = [userId, name, surname, email, password, salt];
+    let routerUtils = new RouterUtils();
+    const ts = routerUtils.getTimeStamp();
+
+    const queryString = 'INSERT INTO public."Profile"("profileId", "name", "surname", "email", "password", "salt", "ts") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING "profileId"';
+    const queryValues = [profileId, name, surname, email, password, salt, ts];
 
     const { rows } = await db.query(queryString, queryValues);
     res.send(rows);
 });
 
 router.put('/', async (req, res) => {
-    let userId, name, surname, email, password, salt;
+    let profileId, name, surname, email, password, salt;
     let queryValues = [];
     let parameterCounter = 1;
     let returnValue;
-    if (req.query.userId) {
-        userId = req.query.userId;
-        let queryString = 'UPDATE public."User" SET ';
+    if (req.query.profileId) {
+        profileId = req.query.profileId;
+        let queryString = 'UPDATE public."Profile" SET ';
         if (req.query.name) {
             name = req.query.name;
             queryValues.push(name);
@@ -75,8 +78,8 @@ router.put('/', async (req, res) => {
 
         if (queryValues.length > 0) {
             queryString = queryString.replace(/,*$/, "");
-            queryString += 'WHERE "userId" = $' + parameterCounter + ' RETURNING "userId"';
-            queryValues.push(userId);
+            queryString += 'WHERE "profileId" = $' + parameterCounter + ' RETURNING "profileId"';
+            queryValues.push(profileId);
 
             const { response } = await db.query(queryString, queryValues);
             returnValue = response;
@@ -86,7 +89,7 @@ router.put('/', async (req, res) => {
         }
     }
     else{
-        returnValue = "userId is not provided.";
+        returnValue = "profileId is not provided.";
     }
 
     res.send(returnValue);
