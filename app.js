@@ -15,6 +15,11 @@ var fallsRouter = require('./routes/user_routes/fallsRouter');
 var heartRateRouter = require('./routes/user_routes/heartRateRouter');
 var temperatureRouter = require('./routes/user_routes/temperatureRouter');
 
+// periodic_routes
+var dailyRouter = require('./routes/periodic_routes/dailyRouter');
+var weeklyRouter = require('./routes/periodic_routes/weeklyRouter');
+var monthlyRouter = require('./routes/periodic_routes/monthlyRouter');
+
 var app = express();
 
 app.use('/', indexRouter);
@@ -25,6 +30,9 @@ app.use('/temperature', temperatureRouter);
 app.use('/profile', profileRouter);
 app.use('/user', userRouter);
 app.use('/physicalData', physicalDataRouter);
+app.use('/daily', dailyRouter);
+app.use('/weekly', weeklyRouter);
+app.use('/monthly', monthlyRouter);
 
 app.use('*', errorRouter);
 
