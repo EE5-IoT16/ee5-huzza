@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require("../../database")
+const db = require("../../database");
+let RouterUtils = require("../route-utils");
 
 router.get('/', async (req, res) => {
     const queryString = 'SELECT * FROM "Profile"';
@@ -96,7 +97,7 @@ router.put('/', async (req, res) => {
 });
 
 router.delete('/', function (req, res, next) {
-    res.send('User delete method called.');
+    res.send('Profile delete method called.');
 });
 
 module.exports = router;

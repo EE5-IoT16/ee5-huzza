@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require("../../database")
+const db = require("../../database");
+let RouterUtils = require("../route-utils");
 
 router.get('/', async (req, res) => {
     const queryString = 'SELECT * FROM "UserPhysicalData"';
@@ -27,7 +28,7 @@ router.post('/', async (req, res) => {
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getTimeStamp();
 
-    const queryString = 'INSERT INTO public."UserPhysicalData"("userId", "weight", "height", "age", "gender", "bmi", "rmr", "ts") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING "deviceId"';
+    const queryString = 'INSERT INTO public."UserPhysicalData"("userId", "weight", "height", "age", "gender", "bmi", "rmr", "ts") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING "userId"';
     const queryValues = [userId, weight, height, age, gender, bmi, rmr, ts];
 
     const { rows } = await db.query(queryString, queryValues);

@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     let queryString = 'SELECT * FROM "Falls"';
-    queryString += "WHERE userId=" + req.params.id;
+    queryString += 'WHERE "userId"=' + req.params.id;
     const { rows } = await db.query(queryString);
     res.send(rows);
 });
@@ -29,11 +29,11 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/', function (req, res, next) {
-    res.send('Gyroscope put method called.');
+    res.send('Falls put method called.');
 });
 
 router.delete('/', function (req, res, next) {
-    res.send('Gyroscope delete method called.');
+    res.send('Falls delete method called.');
 });
 
 module.exports = router;

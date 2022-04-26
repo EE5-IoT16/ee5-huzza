@@ -11,7 +11,7 @@ router.get('/', async(req, res) => {
 
 router.get('/:id', async(req, res) => {
     let queryString = 'SELECT * FROM "Temperature"';
-    queryString += "WHERE userId=" + req.params.id;
+    queryString += 'WHERE "userId"=' + req.params.id;
     const { rows } = await db.query(queryString);
     res.send(rows);
 });

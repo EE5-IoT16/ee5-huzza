@@ -11,13 +11,13 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {    
     let queryString = 'SELECT * FROM "Steps"';
-    queryString += "WHERE userId=" + req.params.id;
+    queryString += 'WHERE "userId"=' + req.params.id;
     const { rows } = await db.query(queryString);
     res.send(rows);
 });
 
 router.post('/', async(req, res, next) => {
-    const step = req.query.acceleration;
+    const step = req.query.steps;
     //There should be a better methodology to this
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getTimeStamp();

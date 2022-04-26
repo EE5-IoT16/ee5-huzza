@@ -20,6 +20,9 @@ var dailyRouter = require('./routes/periodic_routes/dailyRouter');
 var weeklyRouter = require('./routes/periodic_routes/weeklyRouter');
 var monthlyRouter = require('./routes/periodic_routes/monthlyRouter');
 
+// achievements_router
+var goalsRouter = require('./routes/achievements_routes/goalsRouter');
+
 var app = express();
 
 app.use('/', indexRouter);
@@ -33,6 +36,7 @@ app.use('/physicalData', physicalDataRouter);
 app.use('/daily', dailyRouter);
 app.use('/weekly', weeklyRouter);
 app.use('/monthly', monthlyRouter);
+app.use('/goals', goalsRouter);
 
 app.use('*', errorRouter);
 
