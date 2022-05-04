@@ -16,6 +16,10 @@ router.get('/:id', async (req, res) => {
     res.send(rows);
 });
 
+/**
+ * TO BE IMPLEMENTED
+ * If there is already a record of the user then goals should just be updated.
+ */
 router.post('/', async (req, res) => {
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getTimeStamp();

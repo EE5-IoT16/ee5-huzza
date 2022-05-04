@@ -14,6 +14,7 @@ var stepsRouter = require('./routes/user_routes/stepsRoutes');
 var fallsRouter = require('./routes/user_routes/fallsRouter');
 var heartRateRouter = require('./routes/user_routes/heartRateRouter');
 var temperatureRouter = require('./routes/user_routes/temperatureRouter');
+var activitiesRouter = require('./routes/user_routes/activitiesRouter');
 
 // periodic_routes
 var dailyRouter = require('./routes/periodic_routes/dailyRouter');
@@ -22,6 +23,8 @@ var monthlyRouter = require('./routes/periodic_routes/monthlyRouter');
 
 // achievements_router
 var goalsRouter = require('./routes/achievements_routes/goalsRouter');
+var recordsRouter = require('./routes/achievements_routes/recordsRouter');
+var goalsCompletedRouter = require('./routes/achievements_routes/goalsCompletedRouter');
 
 var app = express();
 
@@ -37,6 +40,9 @@ app.use('/daily', dailyRouter);
 app.use('/weekly', weeklyRouter);
 app.use('/monthly', monthlyRouter);
 app.use('/goals', goalsRouter);
+app.use('/records', recordsRouter);
+app.use('/goalsCompleted', goalsCompletedRouter);
+app.use('/activity', activitiesRouter);
 
 app.use('*', errorRouter);
 

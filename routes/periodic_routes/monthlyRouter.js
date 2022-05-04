@@ -7,18 +7,14 @@ router.get('/heartRate', async (req, res) => {
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getMonthRange();
     
-    const queryString = 'SELECT * FROM public."HeartRate" WHERE ts BETWEEN SYMMETRIC \'' + ts.start + '\' AND \''+ ts.end +'\'';
-    const { rows } = await db.query(queryString);
-    res.send(rows);
+    res.send(routerUtils.getHeartRateWithInterval(ts));
 });
 
 router.get('/steps', async (req, res) => {
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getMonthRange();
 
-    const queryString = 'SELECT * FROM public."Steps" WHERE ts BETWEEN SYMMETRIC \'' + ts.start + '\' AND \''+ ts.end +'\'';
-    const { rows } = await db.query(queryString);
-    res.send(rows);
+    res.send(routerUtils.getStepsWithInterval(ts));
 });
 
 module.exports = router;
