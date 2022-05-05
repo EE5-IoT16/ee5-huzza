@@ -1,4 +1,3 @@
-const express = require('express');
 const app = require('./app');
 
 // In the future can be get as a parameter from the command line
