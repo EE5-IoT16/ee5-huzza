@@ -3,18 +3,22 @@ var router = express.Router();
 const db = require("../../database")
 let RouterUtils = require("../route-utils");
 
-router.get('/heartRate', async (req, res) => {
+router.get('/heartRate/:userId', async (req, res) => {
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getDayRange();
-        
-    res.send(routerUtils.getHeartRateWithInterval(ts));
+    const userId = req.params.userId;
+    const result = await routerUtils.getHeartRateWithInterval(userId,ts);
+
+    res.send(result);
 });
 
-router.get('/steps', async (req, res) => {
+router.get('/steps/:userId', async (req, res) => {
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getDayRange();
-    
-    res.send(routerUtils.getStepsWithInterval(ts));
+    const userId = req.params.userId;
+    const result = routerUtils.getStepsWithInterval(userId, ts);
+
+    res.send(result);
 });
 
 module.exports = router;

@@ -49,16 +49,14 @@ module.exports = routeUtils = (() => {
         return ts;
     };
 
-    // ADD userId
-    routeUtils.prototype.getStepsWithInterval = async function (timeRange) {
-        const queryString = 'SELECT * FROM public."Steps" WHERE ts BETWEEN SYMMETRIC \'' + timeRange.start + '\' AND \'' + timeRange.end + '\'';
+    routeUtils.prototype.getStepsWithInterval = async function (userId, timeRange) {
+        const queryString = 'SELECT * FROM public."Steps" WHERE "userId"=' + userId + ' AND ts BETWEEN SYMMETRIC \'' + timeRange.start + '\' AND \'' + timeRange.end + '\'';
         const { rows } = await db.query(queryString);
         return rows;
     };
 
-    // ADD userId
-    routeUtils.prototype.getHeartRateWithInterval = async function (timeRange) {
-        const queryString = 'SELECT * FROM public."HeartRate" WHERE ts BETWEEN SYMMETRIC \'' + ts.start + '\' AND \'' + ts.end + '\'';
+    routeUtils.prototype.getHeartRateWithInterval = async function (userId, timeRange) {
+        const queryString = 'SELECT * FROM public."HeartRate" WHERE "userId"=' + userId + ' AND ts BETWEEN SYMMETRIC \'' + timeRange.start + '\' AND \'' + timeRange.end + '\'';
         const { rows } = await db.query(queryString);
         return rows;
     };
@@ -73,25 +71,41 @@ module.exports = routeUtils = (() => {
         let queryString = 'SELECT * FROM "UserPhysicalData"';
         queryString += 'WHERE "userId"=' + userId;
         const { rows } = await db.query(queryString);
-        return rows;    
+        return rows;
     };
 
     routeUtils.prototype.calculateCaloriesBurned = function (gender, weight, height, age) {
         let caloriesBurned = 0;
 
         // Need new formula that uses time spend as well;
-        if(gender = "male"){
+        if (gender = "male") {
             caloriesBurned = 66 + (6.23 * 2.2 * weight) + (12.7 * 0.3937 * height) - (4.7 * age);
         }
-        else if (gender = "female"){
+        else if (gender = "female") {
             caloriesBurned = 655 + (4.35 * 2.2 * weight) + (4.7 * 0.3937 * height) - (4.7 * age);
         }
-        else{
+        else {
             // I have made up this formula
             caloriesBurned = 300 + (5.23 * 2.2 * weight) + (8.7 * 0.3937 * height) - (4.7 * age);
         }
 
         return caloriesBurned;
     };
+
+    routeUtils.prototype.calculateDistanceCovered = function (steps, height, gender) {
+        let distanceCovered;
+
+        if (gender = "male") {
+            distanceCovered = 0.762 * steps;
+        }
+        else if (gender = "female") {
+            distanceCovered = 0.67 * steps;
+        }
+        else {
+            distanceCovered = 0.716 * steps;
+        }
+        return distanceCovered;
+    };
+    
     return routeUtils;
 })();

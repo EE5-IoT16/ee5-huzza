@@ -17,7 +17,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    let routerUtils = new RouterUtils();    
+    let routerUtils = new RouterUtils();
     let queryString, result, returnResult;
     let queryValues = [];
 
@@ -26,23 +26,28 @@ router.post('/', async (req, res) => {
         const startTime = req.query.startTime;
         const endTime = req.query.endTime;
 
-        let steps = routerUtils.getMaxStepWithInterval('day', userId);
+        let steps = await routerUtils.getMaxStepWithInterval('day', userId);
 
         if (startTime && !endTime) {
             queryString = 'INSERT INTO public."Activities"("userId", "startTime", "steps")VALUES ($1, $2, $3) RETURNING "userId"';
-            queryValues = [userId, startTime, steps];
+            queryValues = [userId, startTime, steps[0].totalstep];
         }
         else if (startTime && endTime) {
             const userPhysicalData = await routerUtils.getUserPhysicalDataWithId(userId);
             const caloriesBurned = routerUtils.calculateCaloriesBurned(userPhysicalData[0].gender, userPhysicalData[0].weight, userPhysicalData[0].height, userPhysicalData[0].age);
 
             // Get todays activity
-            queryString = 'SELECT steps FROM public."Activities" WHERE "userId"=' + userId + ' AND "startTime"= '+ startTime + ';';
+            queryString = 'SELECT steps FROM public."Activities" WHERE "userId"=' + userId + ' AND "startTime"= \'' + startTime + '\';';
             result = await db.query(queryString);
-            steps = result.rows[0].steps - steps;
+            steps = steps[0].totalstep - result.rows[0].steps;
+            const distanceCovered = routerUtils.calculateDistanceCovered(steps, userPhysicalData[0].height, userPhysicalData[0].gender,)
 
-            queryString = 'INSERT INTO public."Activities"("userId", "endTime", "steps", "caloriesBurned")VALUES ($1, $2, $3, $4) RETURNING "userId"';
-            queryValues = [userId, endTime, steps, caloriesBurned];
+            result = await routerUtils.getHeartRateWithInterval(userId, { "start": startTime, "end": endTime });
+            const averageHeartRate = result.reduce((total, next) => total + next.bpm, 0) / result.length;
+            const maxHeartRate = Math.max(...result.map(o => o.bpm));
+
+            queryString = 'UPDATE public."Activities" SET "endTime"=$1, "caloriesBurned"=$2, "maxHeartRate"=$3, "averageHeartRate"=$4, "steps"=$5, "distanceCovered"=$6 WHERE "userId"=$7 AND "startTime"=$8 RETURNING "userId";';
+            queryValues = [endTime, caloriesBurned, maxHeartRate, averageHeartRate, steps, distanceCovered, userId, startTime];
         }
 
         result = await db.query(queryString, queryValues);

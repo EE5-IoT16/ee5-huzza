@@ -17,24 +17,32 @@ router.get('/:id', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
+    let result;
     const step = req.query.steps;
 
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getTimeStamp();
     const userId = req.query.userId;
 
-    const day_ts = routerUtils.getDayRange();
+    const day_ts = routerUtils.getDayRange();    
 
-    let queryString = 'SELECT * FROM public."Steps" WHERE ts BETWEEN SYMMETRIC \'' + day_ts.start + '\' AND \'' + day_ts.end + '\'';
-    let result = await db.query(queryString);
-    if (result.rows.length > 0) {
-        queryString = 'UPDATE public."Steps" SET steps = $1 WHERE id= $2 RETURNING "userId"';
-        result = await db.query(queryString, [parseInt(result.rows[0].steps) + parseInt(step), result.rows[0].id]);
+    if (userId) {
+        let queryString = 'SELECT * FROM public."Steps" WHERE "userId"=' + userId + ' AND  ts BETWEEN SYMMETRIC \'' + day_ts.start + '\' AND \'' + day_ts.end + '\'';
+        result = await db.query(queryString);
+        if (result.rows.length > 0) {
+            queryString = 'UPDATE public."Steps" SET steps = $1 WHERE id= $2 RETURNING "userId"';
+            result = await db.query(queryString, [parseInt(result.rows[0].steps) + parseInt(step), result.rows[0].id]);
+            result = result.rows;
+        }
+        else {
+            queryString = 'INSERT INTO public."Steps"("userId","steps","ts")VALUES ($1, $2, $3) RETURNING "userId"';
+            const queryValues = [userId, step, ts];
+            result = await db.query(queryString, queryValues);
+            result = result.rows;
+        }
     }
-    else {
-        queryString = 'INSERT INTO public."Steps"("userId","steps","ts")VALUES ($1, $2, $3) RETURNING "userId"';
-        const queryValues = [userId, step, ts];
-        result = await db.query(queryString, queryValues);
+    else{
+        result = "No userId provided.";
     }
     res.send(result.rows);
 });
