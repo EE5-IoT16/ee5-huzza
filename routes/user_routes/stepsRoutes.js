@@ -31,7 +31,7 @@ router.post('/', async (req, res, next) => {
         result = await db.query(queryString);
         if (result.rows.length > 0) {
             queryString = 'UPDATE public."Steps" SET steps = $1 WHERE id= $2 RETURNING "userId"';
-            result = await db.query(queryString, [parseInt(result.rows[0].steps) + parseInt(step), result.rows[0].id]);
+            result = await db.query(queryString, [parseInt(step), result.rows[0].id]);
             result = result.rows;
         }
         else {
