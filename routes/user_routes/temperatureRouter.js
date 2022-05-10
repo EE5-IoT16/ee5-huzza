@@ -17,8 +17,11 @@ router.get('/:id', async(req, res) => {
 });
 
 router.post('/', async(req, res) => {
-    const temperature = req.query.temperature;
-    //There should be a better methodology to this
+    let temperature = req.query.temperature;
+    temperature = temperature.replace(/\s/g, "");
+    temperature = parseInt(temperature, 2);
+    temperature = 21.0 + (temperature - 333.87 * 6)/333.87;
+    
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getTimeStamp();
     const userId = req.query.userId;
