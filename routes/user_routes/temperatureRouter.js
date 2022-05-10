@@ -19,8 +19,9 @@ router.get('/:id', async(req, res) => {
 router.post('/', async(req, res) => {
     let temperature = req.query.temperature;
     temperature = temperature.replace(/\s/g, "");
-    temperature = parseInt(temperature, 2);
+    temperature = parseInt(temperature);    
     temperature = 21.0 + (temperature - 333.87 * 6)/333.87;
+    temperature = temperature.toFixed(2);
     
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getTimeStamp();
