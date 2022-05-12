@@ -23,12 +23,13 @@ router.post('/', async (req, res) => {
     const email = req.query.email;
     const password = req.query.password;
     const salt = req.query.salt;
+    const defaultId = req.query.defaultId;
 
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getTimeStamp();
 
-    const queryString = 'INSERT INTO public."Profile"("profileId", "name", "surname", "email", "password", "salt", "ts") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING "profileId"';
-    const queryValues = [profileId, name, surname, email, password, salt, ts];
+    const queryString = 'INSERT INTO public."Profile"("profileId", "name", "surname", "email", "password", "salt", "ts", "defaultId") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING "profileId"';
+    const queryValues = [profileId, name, surname, email, password, salt, ts, defaultId];
 
     const { rows } = await db.query(queryString, queryValues);
     res.send(rows);
