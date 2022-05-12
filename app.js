@@ -6,6 +6,7 @@ var errorRouter = require('./routes/generic_routes/errorRouter');
 
 // profile_routes
 var profileRouter = require('./routes/profile_routes/profileRouter');
+var profileUserLinkRouter = require('./routes/profile_routes/profileUserLinkRouter');
 
 // user_routes
 var userRouter = require('./routes/user_routes/userRouter');
@@ -43,6 +44,7 @@ app.use('/goals', goalsRouter);
 app.use('/records', recordsRouter);
 app.use('/goalsCompleted', goalsCompletedRouter);
 app.use('/activity', activitiesRouter);
+app.use('/profileUserLink', profileUserLinkRouter);
 
 app.use('*', errorRouter);
 
