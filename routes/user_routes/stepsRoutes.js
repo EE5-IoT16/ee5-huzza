@@ -12,8 +12,16 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
     let queryString = 'SELECT * FROM "Steps"';
     queryString += 'WHERE "userId"=' + req.params.id;
-    const { rows } = await db.query(queryString);
-    res.send(rows);
+    var result;
+    await db.query(queryString).then(res => {
+        if (res.rows.length > 0){
+            result = res.rows; 
+        }        
+    }).catch(e => {
+        console.log(e);
+        result = e; 
+    });
+    res.send(result);
 });
 
 router.post('/', async (req, res, next) => {
@@ -24,7 +32,7 @@ router.post('/', async (req, res, next) => {
     const ts = routerUtils.getTimeStamp();
     const userId = req.query.userId;
 
-    const day_ts = routerUtils.getDayRange();    
+    const day_ts = routerUtils.getDayRange();
 
     if (userId) {
         let queryString = 'SELECT * FROM public."Steps" WHERE "userId"=' + userId + ' AND  ts BETWEEN SYMMETRIC \'' + day_ts.start + '\' AND \'' + day_ts.end + '\'';
@@ -41,7 +49,7 @@ router.post('/', async (req, res, next) => {
             result = result.rows;
         }
     }
-    else{
+    else {
         result = "No userId provided.";
     }
     res.send(result.rows);
