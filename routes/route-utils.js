@@ -106,6 +106,29 @@ module.exports = routeUtils = (() => {
         }
         return distanceCovered;
     };
-    
+
+    routeUtils.prototype.postEmptySteps = async function () {
+        const day_ts = this.getDayRange();
+        let queryString = 'SELECT "userId" FROM public."User"';
+        let userIds = await db.query(queryString);
+        let result;
+
+        for (var i = 0; i < userIds.rows.length; i++){
+            var userId = userIds.rows[i].userId;
+            queryString = 'SELECT * FROM public."Steps" WHERE "userId"=' + userId + ' AND  ts BETWEEN SYMMETRIC \'' + day_ts.start + '\' AND \'' + day_ts.end + '\'';
+            result = await db.query(queryString);
+
+            if (result.rows.length === 0){
+                let step = 0;
+                let ts = this.getTimeStamp();
+                queryString = 'INSERT INTO public."Steps"("userId","steps","ts")VALUES ($1, $2, $3) RETURNING "userId"';
+                let queryValues = [userId, step, ts];
+                result = await db.query(queryString, queryValues);
+            }
+        }
+        
+        console.log("something");
+    };
+
     return routeUtils;
 })();
