@@ -25,11 +25,14 @@ router.post('/', async (req, res) => {
     const bmi = req.query.bmi;
     const rmr = req.query.rmr;
 
+    let maxHeartRate = 205.8 - (0.685 * age);
+    maxHeartRate = maxHeartRate.toFixed(2);
+
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getTimeStamp();
 
-    const queryString = 'INSERT INTO public."UserPhysicalData"("userId", "weight", "height", "age", "gender", "bmi", "rmr", "ts") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING "userId"';
-    const queryValues = [userId, weight, height, age, gender, bmi, rmr, ts];
+    const queryString = 'INSERT INTO public."UserPhysicalData"("userId", "weight", "height", "age", "gender", "bmi", "rmr", "ts", "maxHeartRate") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "userId"';
+    const queryValues = [userId, weight, height, age, gender, bmi, rmr, ts, maxHeartRate];
 
     const { rows } = await db.query(queryString, queryValues);
     res.send(rows);
@@ -51,21 +54,27 @@ router.put('/', async (req, res) => {
         }
 
         if (req.query.height) {
-            surname = req.query.height;
+            height = req.query.height;
             queryValues.push(height);
             queryString += "height = $" + parameterCounter + " ,";
             parameterCounter++;
         }
 
         if (req.query.age) {
-            email = req.query.age;
+            age = req.query.age;
             queryValues.push(age);
             queryString += "age = $" + parameterCounter + " ,";
+            parameterCounter++;
+
+            let maxHeartRate = 205.8 - (0.685 * age);
+            maxHeartRate = maxHeartRate.toFixed(2);
+            queryValues.push(maxHeartRate);
+            queryString += '"maxHeartRate" = $' + parameterCounter + " ,";
             parameterCounter++;
         }
 
         if (req.query.password) {
-            password = req.query.gender;
+            gender = req.query.gender;
             queryValues.push(gender);
             queryString += "gender = $" + parameterCounter + " ,";
             parameterCounter++;

@@ -16,6 +16,7 @@ var fallsRouter = require('./routes/user_routes/fallsRouter');
 var heartRateRouter = require('./routes/user_routes/heartRateRouter');
 var temperatureRouter = require('./routes/user_routes/temperatureRouter');
 var activitiesRouter = require('./routes/user_routes/activitiesRouter');
+var heartPoints = require('./routes/user_routes/heartPoints');
 
 // periodic_routes
 var dailyRouter = require('./routes/periodic_routes/dailyRouter');
@@ -47,6 +48,7 @@ app.use('/goalsCompleted', goalsCompletedRouter);
 app.use('/activity', activitiesRouter);
 app.use('/profileUserLink', profileUserLinkRouter);
 app.use('/tenMinutes', tenMinutesRouter);
+app.use('/heartPoints', heartPoints);
 
 app.use('*', errorRouter);
 
