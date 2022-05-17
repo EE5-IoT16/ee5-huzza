@@ -16,7 +16,7 @@ router.get('/steps/:userId', async (req, res) => {
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getWeekRange();
     const userId = req.params.userId;
-    const result = routerUtils.getStepsWithInterval(userId, ts);
+    const result = await routerUtils.getStepsWithInterval(userId, ts);
 
     res.send(result);
 });

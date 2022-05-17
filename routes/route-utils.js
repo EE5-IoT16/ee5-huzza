@@ -7,7 +7,7 @@ module.exports = routeUtils = (() => {
         let date = new Date();
         let ts = "";
 
-        ts += date.getUTCFullYear() + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCDate() + " ";
+        ts += date.getUTCFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " ";
         ts += date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 
         return ts;
@@ -17,10 +17,10 @@ module.exports = routeUtils = (() => {
         let date = new Date();
         let ts = { start: "", end: "" };
 
-        ts.start += date.getUTCFullYear() + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCDate();
+        ts.start += date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 
         let tomorrow = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
-        ts.end += tomorrow.getUTCFullYear() + "-" + (tomorrow.getUTCMonth() + 1) + "-" + tomorrow.getUTCDate();
+        ts.end += tomorrow.getFullYear() + "-" + (tomorrow.getMonth() + 1) + "-" + tomorrow.getDate();
 
         return ts;
     };
@@ -29,10 +29,10 @@ module.exports = routeUtils = (() => {
         let date = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
         let ts = { start: "", end: "" };
 
-        ts.end += date.getUTCFullYear() + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCDate();
+        ts.end += date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 
         let tomorrow = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        ts.start += tomorrow.getUTCFullYear() + "-" + (tomorrow.getUTCMonth() + 1) + "-" + tomorrow.getUTCDate();
+        ts.start += tomorrow.getFullYear() + "-" + (tomorrow.getMonth() + 1) + "-" + tomorrow.getDate();
 
         return ts;
     };
@@ -41,10 +41,22 @@ module.exports = routeUtils = (() => {
         let date = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
         let ts = { start: "", end: "" };
 
-        ts.end += date.getUTCFullYear() + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCDate();
+        ts.end += date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 
         let tomorrow = new Date(Date.now() - date.getUTCDate() * 24 * 60 * 60 * 1000);
-        ts.start += tomorrow.getUTCFullYear() + "-" + (tomorrow.getUTCMonth() + 1) + "-" + tomorrow.getUTCDate();
+        ts.start += tomorrow.getFullYear() + "-" + (tomorrow.getMonth() + 1) + "-" + tomorrow.getDate();
+
+        return ts;
+    };
+
+    routeUtils.prototype.getTenMinuteRange = function () { 
+        let date = new Date();
+        let ts = { start: "", end: "" };
+
+        ts.start += date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":00";
+
+        let tomorrow = new Date(Date.now() - 10 * 60 * 1000);
+        ts.end += tomorrow.getFullYear() + "-" + (tomorrow.getMonth() + 1) + "-" + tomorrow.getDate() + " " + tomorrow.getHours() + ":" + tomorrow.getMinutes() + ":00";
 
         return ts;
     };
@@ -113,12 +125,12 @@ module.exports = routeUtils = (() => {
         let userIds = await db.query(queryString);
         let result;
 
-        for (var i = 0; i < userIds.rows.length; i++){
+        for (var i = 0; i < userIds.rows.length; i++) {
             var userId = userIds.rows[i].userId;
             queryString = 'SELECT * FROM public."Steps" WHERE "userId"=' + userId + ' AND  ts BETWEEN SYMMETRIC \'' + day_ts.start + '\' AND \'' + day_ts.end + '\'';
             result = await db.query(queryString);
 
-            if (result.rows.length === 0){
+            if (result.rows.length === 0) {
                 let step = 0;
                 let ts = this.getTimeStamp();
                 queryString = 'INSERT INTO public."Steps"("userId","steps","ts")VALUES ($1, $2, $3) RETURNING "userId"';
@@ -126,7 +138,7 @@ module.exports = routeUtils = (() => {
                 result = await db.query(queryString, queryValues);
             }
         }
-        
+
         console.log("something");
     };
 

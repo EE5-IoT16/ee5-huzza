@@ -21,6 +21,7 @@ var activitiesRouter = require('./routes/user_routes/activitiesRouter');
 var dailyRouter = require('./routes/periodic_routes/dailyRouter');
 var weeklyRouter = require('./routes/periodic_routes/weeklyRouter');
 var monthlyRouter = require('./routes/periodic_routes/monthlyRouter');
+var tenMinutesRouter = require('./routes/periodic_routes/tenMinutesRouter');
 
 // achievements_router
 var goalsRouter = require('./routes/achievements_routes/goalsRouter');
@@ -45,6 +46,7 @@ app.use('/records', recordsRouter);
 app.use('/goalsCompleted', goalsCompletedRouter);
 app.use('/activity', activitiesRouter);
 app.use('/profileUserLink', profileUserLinkRouter);
+app.use('/tenMinutes', tenMinutesRouter);
 
 app.use('*', errorRouter);
 
