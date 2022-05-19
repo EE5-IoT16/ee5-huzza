@@ -49,7 +49,7 @@ module.exports = routeUtils = (() => {
         return ts;
     };
 
-    routeUtils.prototype.getTenMinuteRange = function () { 
+    routeUtils.prototype.getTenMinuteRange = function () {
         let date = new Date();
         let ts = { start: "", end: "" };
 
@@ -73,8 +73,20 @@ module.exports = routeUtils = (() => {
         return rows;
     };
 
+    routeUtils.prototype.getHeartPointsWithInterval = async function (userId, timeRange) {
+        const queryString = 'SELECT * FROM public."HeartPoints" WHERE "userId"=' + userId + ' AND ts BETWEEN SYMMETRIC \'' + timeRange.start + '\' AND \'' + timeRange.end + '\'';
+        const { rows } = await db.query(queryString);
+        return rows;
+    };
+
     routeUtils.prototype.getMaxStepWithInterval = async function (timeFrame, userId) {
         const queryString = 'SELECT DATE_TRUNC(\'' + timeFrame + '\', ts) AS date, SUM(steps) AS totalStep FROM public."Steps" WHERE "userId"=' + userId + ' GROUP BY date ORDER BY totalStep DESC LIMIT 1;';
+        const { rows } = await db.query(queryString);
+        return rows;
+    };
+
+    routeUtils.prototype.getMaxHeartPointsWithInterval = async function (timeFrame, userId) {
+        const queryString = 'SELECT DATE_TRUNC(\'' + timeFrame + '\', ts) AS date, SUM("heartPoint") AS totalHeartPoint FROM public."HeartPoints" WHERE "userId"=' + userId + ' GROUP BY date ORDER BY totalHeartPoint DESC LIMIT 1;';
         const { rows } = await db.query(queryString);
         return rows;
     };
@@ -100,7 +112,7 @@ module.exports = routeUtils = (() => {
             // I have made up this formula
             caloriesBurned = 300 + (5.23 * 2.2 * weight) + (8.7 * 0.3937 * height) - (4.7 * age);
         }
-
+        caloriesBurned = caloriesBurned.toFixed(2);
         return caloriesBurned;
     };
 
@@ -116,6 +128,8 @@ module.exports = routeUtils = (() => {
         else {
             distanceCovered = 0.716 * steps;
         }
+
+        distanceCovered = distanceCovered.toFixed(2);
         return distanceCovered;
     };
 
@@ -138,8 +152,49 @@ module.exports = routeUtils = (() => {
                 result = await db.query(queryString, queryValues);
             }
         }
+    };
 
-        console.log("something");
+    routeUtils.prototype.postEmptyHeartPoints = async function () {
+        const day_ts = this.getDayRange();
+        let queryString = 'SELECT "userId" FROM public."User"';
+        let userIds = await db.query(queryString);
+        let result;
+
+        for (var i = 0; i < userIds.rows.length; i++) {
+            var userId = userIds.rows[i].userId;
+            queryString = 'SELECT * FROM public."HeartPoints" WHERE "userId"=' + userId + ' AND  ts BETWEEN SYMMETRIC \'' + day_ts.start + '\' AND \'' + day_ts.end + '\'';
+            result = await db.query(queryString);
+
+            if (result.rows.length === 0) {
+                let heartPoint = 0;
+                let ts = this.getTimeStamp();
+                queryString = 'INSERT INTO public."HeartPoints"("userId","heartPoint","ts")VALUES ($1, $2, $3) RETURNING "userId"';
+                let queryValues = [userId, heartPoint, ts];
+                result = await db.query(queryString, queryValues);
+            }
+        }
+    };
+
+    routeUtils.prototype.postEmptyGoalsCompleted = async function () {
+        const day_ts = this.getDayRange();
+        let queryString = 'SELECT "userId" FROM public."User"';
+        let userIds = await db.query(queryString);
+        let result;
+
+        for (var i = 0; i < userIds.rows.length; i++) {
+            var userId = userIds.rows[i].userId;
+            queryString = 'SELECT * FROM public."GoalsCompleted" WHERE "userId"=' + userId + ' AND  ts BETWEEN SYMMETRIC \'' + day_ts.start + '\' AND \'' + day_ts.end + '\'';
+            result = await db.query(queryString);
+
+            if (result.rows.length === 0) {                
+                let isHeartPointsCompleted = false;
+                let isStepsCompleted = false;
+                let ts = this.getTimeStamp();
+                queryString = 'INSERT INTO public."GoalsCompleted"("userId","isStepsCompleted", "isHeartPointsCompleted","ts")VALUES ($1, $2, $3, $4) RETURNING "userId"';
+                let queryValues = [userId, isStepsCompleted, isHeartPointsCompleted, ts];
+                result = await db.query(queryString, queryValues);
+            }
+        }
     };
 
     return routeUtils;

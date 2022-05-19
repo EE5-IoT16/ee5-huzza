@@ -37,8 +37,34 @@ router.post('/', async (req, res) => {
         if (maxDayStep.length > 0) { maxDayStep = maxDayStep[0].totalstep; }
         else {maxDayStep = 0;}
 
-        let queryString = 'SELECT * FROM public."Records" WHERE "userId" = $1';
-        let queryValues = [userId]
+        let maxMonthHeartPoints = await routerUtils.getMaxHeartPointsWithInterval('month', userId);
+        if (maxMonthHeartPoints.length > 0) { maxMonthHeartPoints = maxMonthHeartPoints[0].totalheartpoint; }
+        else {maxMonthHeartPoints = 0;}
+
+        let maxWeekHeartPoints = await routerUtils.getMaxHeartPointsWithInterval('week', userId);
+        if (maxWeekHeartPoints.length > 0) { maxWeekHeartPoints = maxWeekHeartPoints[0].totalheartpoint; }
+        else {maxWeekHeartPoints = 0;}
+
+        let maxDayHeartPoints = await routerUtils.getMaxHeartPointsWithInterval('day', userId);
+        if (maxDayHeartPoints.length > 0) { maxDayHeartPoints = maxDayHeartPoints[0].totalheartpoint; }
+        else {maxDayHeartPoints = 0;}
+
+        // let queryString = 'SELECT * FROM public."GoalsCompleted" WHERE "userId" = $1';
+        // let queryValues = [userId];
+        // result = await db.query(queryString, queryValues);
+
+        // let streaks = result.rows.reduce((first, second) => {            
+        //     // group them and return grouped stuff.
+        //     var dateOne = new Date(first.ts.getDate());
+        //     var dateTwo = new Date(second.ts.getDate());
+        //     if ((dateTwo - dateOne) === 86400000){
+
+        //     }
+            
+        // });
+
+        queryString = 'SELECT * FROM public."Records" WHERE "userId" = $1';
+        queryValues = [userId];
         result = await db.query(queryString, queryValues);
 
         if (result.rows.length) {
@@ -59,6 +85,24 @@ router.post('/', async (req, res) => {
             if (maxDayStep > result.rows[0].maxStepDay) {
                 queryValues.push(maxDayStep);
                 queryString += '"maxStepDay" = $' + parameterCounter + " ,";
+                parameterCounter++;
+            }
+
+            if (maxMonthHeartPoints > result.rows[0].maxHeartPointMonth){
+                queryValues.push(maxMonthHeartPoints);
+                queryString += '"maxHeartPointMonth" = $' + parameterCounter + " ,";
+                parameterCounter++;
+            }
+
+            if (maxWeekHeartPoints > result.rows[0].maxHeartPointWeek){
+                queryValues.push(maxWeekHeartPoints);
+                queryString += '"maxHeartPointWeek" = $' + parameterCounter + " ,";
+                parameterCounter++;
+            }
+
+            if (maxDayHeartPoints > result.rows[0].maxHeartPointDay){
+                queryValues.push(maxDayHeartPoints);
+                queryString += '"maxHeartPointDay" = $' + parameterCounter + " ,";
                 parameterCounter++;
             }
 
@@ -91,3 +135,6 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
+
+
+//current streak

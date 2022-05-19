@@ -62,6 +62,8 @@ router.post('/', async (req, res) => {
             else if (heartRateIntensity >= 70){
                 heartPoints = finalTime * 2;
             }
+            heartPoints = heartPoints.toFixed(2);
+
             queryString = 'INSERT INTO public."HeartPoints"("userId", "heartPoint", "ts")VALUES ($1, $2, $3) RETURNING "userId"';
             queryValues = [userId, heartPoints, endTime];
             await db.query(queryString, queryValues);

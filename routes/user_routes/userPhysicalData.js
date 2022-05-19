@@ -18,12 +18,18 @@ router.get('/:userId', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const userId = req.query.userId;
-    const weight = req.query.weight;
-    const height = req.query.height;
+    let weight = req.query.weight;
+    let height = req.query.height;
+    weight = weight.toFixed(2);
+    height = height.toFixed(2);
+
     const age = req.query.age;
     const gender = req.query.gender;
-    const bmi = req.query.bmi;
-    const rmr = req.query.rmr;
+
+    let bmi = req.query.bmi;
+    let rmr = req.query.rmr;
+    bmi = bmi.toFixed(2);
+    rmr = rmr.toFixed(2);
 
     let maxHeartRate = 205.8 - (0.685 * age);
     maxHeartRate = maxHeartRate.toFixed(2);
