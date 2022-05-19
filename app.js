@@ -3,6 +3,7 @@ var express = require('express');
 // generic_routes
 var indexRouter = require('./routes/generic_routes/index');
 var errorRouter = require('./routes/generic_routes/errorRouter');
+var quotesRouter = require('./routes/generic_routes/quotes');
 
 // profile_routes
 var profileRouter = require('./routes/profile_routes/profileRouter');
@@ -49,6 +50,7 @@ app.use('/activity', activitiesRouter);
 app.use('/profileUserLink', profileUserLinkRouter);
 app.use('/tenMinutes', tenMinutesRouter);
 app.use('/heartPoints', heartPoints);
+app.use('/quotes', quotesRouter);
 
 app.use('*', errorRouter);
 
