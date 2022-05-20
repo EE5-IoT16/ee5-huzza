@@ -27,41 +27,33 @@ router.post('/', async (req, res) => {
     if (userId) {
         let maxMonthStep = await routerUtils.getMaxStepWithInterval('month', userId);
         if (maxMonthStep.length > 0) { maxMonthStep = maxMonthStep[0].totalstep; }
-        else {maxMonthStep = 0;}
+        else { maxMonthStep = 0; }
 
         let maxWeekStep = await routerUtils.getMaxStepWithInterval('week', userId);
         if (maxWeekStep.length > 0) { maxWeekStep = maxWeekStep[0].totalstep; }
-        else {maxWeekStep = 0;}
+        else { maxWeekStep = 0; }
 
         let maxDayStep = await routerUtils.getMaxStepWithInterval('day', userId);
         if (maxDayStep.length > 0) { maxDayStep = maxDayStep[0].totalstep; }
-        else {maxDayStep = 0;}
+        else { maxDayStep = 0; }
 
         let maxMonthHeartPoints = await routerUtils.getMaxHeartPointsWithInterval('month', userId);
         if (maxMonthHeartPoints.length > 0) { maxMonthHeartPoints = maxMonthHeartPoints[0].totalheartpoint; }
-        else {maxMonthHeartPoints = 0;}
+        else { maxMonthHeartPoints = 0; }
 
         let maxWeekHeartPoints = await routerUtils.getMaxHeartPointsWithInterval('week', userId);
         if (maxWeekHeartPoints.length > 0) { maxWeekHeartPoints = maxWeekHeartPoints[0].totalheartpoint; }
-        else {maxWeekHeartPoints = 0;}
+        else { maxWeekHeartPoints = 0; }
 
         let maxDayHeartPoints = await routerUtils.getMaxHeartPointsWithInterval('day', userId);
         if (maxDayHeartPoints.length > 0) { maxDayHeartPoints = maxDayHeartPoints[0].totalheartpoint; }
-        else {maxDayHeartPoints = 0;}
+        else { maxDayHeartPoints = 0; }
 
-        // let queryString = 'SELECT * FROM public."GoalsCompleted" WHERE "userId" = $1';
-        // let queryValues = [userId];
-        // result = await db.query(queryString, queryValues);
+        let queryString = 'SELECT * FROM public."GoalsCompleted" WHERE "userId" = $1';
+        let queryValues = [userId];
+        result = await db.query(queryString, queryValues);
 
-        // let streaks = result.rows.reduce((first, second) => {            
-        //     // group them and return grouped stuff.
-        //     var dateOne = new Date(first.ts.getDate());
-        //     var dateTwo = new Date(second.ts.getDate());
-        //     if ((dateTwo - dateOne) === 86400000){
-
-        //     }
-            
-        // });
+        const maxStreak = Math.max(...result.rows.map(o => o.currentStreak));
 
         queryString = 'SELECT * FROM public."Records" WHERE "userId" = $1';
         queryValues = [userId];
@@ -88,21 +80,27 @@ router.post('/', async (req, res) => {
                 parameterCounter++;
             }
 
-            if (maxMonthHeartPoints > result.rows[0].maxHeartPointMonth){
+            if (maxMonthHeartPoints > result.rows[0].maxHeartPointMonth) {
                 queryValues.push(maxMonthHeartPoints);
                 queryString += '"maxHeartPointMonth" = $' + parameterCounter + " ,";
                 parameterCounter++;
             }
 
-            if (maxWeekHeartPoints > result.rows[0].maxHeartPointWeek){
+            if (maxWeekHeartPoints > result.rows[0].maxHeartPointWeek) {
                 queryValues.push(maxWeekHeartPoints);
                 queryString += '"maxHeartPointWeek" = $' + parameterCounter + " ,";
                 parameterCounter++;
             }
 
-            if (maxDayHeartPoints > result.rows[0].maxHeartPointDay){
+            if (maxDayHeartPoints > result.rows[0].maxHeartPointDay) {
                 queryValues.push(maxDayHeartPoints);
                 queryString += '"maxHeartPointDay" = $' + parameterCounter + " ,";
+                parameterCounter++;
+            }
+
+            if (maxStreak > result.rows[0].streak) {
+                queryValues.push(maxStreak);
+                queryString += '"streak" = $' + parameterCounter + " ,";
                 parameterCounter++;
             }
 
@@ -119,8 +117,8 @@ router.post('/', async (req, res) => {
             }
         }
         else {
-            queryString = 'INSERT INTO public."Records"("userId","maxStepDay","maxStepWeek", "maxStepMonth","ts")VALUES ($1, $2, $3, $4, $5) RETURNING "userId"';
-            queryValues = [userId, maxDayStep, maxWeekStep, maxMonthStep, ts];
+            queryString = 'INSERT INTO public."Records"("userId","maxStepDay","maxStepWeek", "maxStepMonth", "maxHeartPointDay","maxHeartPointWeek","maxHeartPointMonth","streak","ts")VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "userId"';
+            queryValues = [userId, maxDayStep, maxWeekStep, maxMonthStep, maxDayHeartPoints, maxWeekHeartPoints, maxMonthHeartPoints, maxStreak, ts];
 
             result = await db.query(queryString, queryValues);
             returnValue = result.rows;

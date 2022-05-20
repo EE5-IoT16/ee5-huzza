@@ -62,7 +62,7 @@ module.exports = routeUtils = (() => {
     };
 
     routeUtils.prototype.getStepsWithInterval = async function (userId, timeRange) {
-        const queryString = 'SELECT * FROM public."Steps" WHERE "userId"=' + userId + ' AND ts BETWEEN SYMMETRIC \'' + timeRange.start + '\' AND \'' + timeRange.end + '\'';
+        const queryString = 'SELECT SUM(steps) AS "totalSteps" FROM public."Steps" WHERE "userId"=' + userId + ' AND ts BETWEEN SYMMETRIC \'' + timeRange.start + '\' AND \'' + timeRange.end + '\'';
         const { rows } = await db.query(queryString);
         return rows;
     };
@@ -74,7 +74,7 @@ module.exports = routeUtils = (() => {
     };
 
     routeUtils.prototype.getHeartPointsWithInterval = async function (userId, timeRange) {
-        const queryString = 'SELECT * FROM public."HeartPoints" WHERE "userId"=' + userId + ' AND ts BETWEEN SYMMETRIC \'' + timeRange.start + '\' AND \'' + timeRange.end + '\'';
+        const queryString = 'SELECT SUM("heartPoint") AS "totalHeartPoints" FROM public."HeartPoints" WHERE "userId"=' + userId + ' AND ts BETWEEN SYMMETRIC \'' + timeRange.start + '\' AND \'' + timeRange.end + '\'';
         const { rows } = await db.query(queryString);
         return rows;
     };
@@ -190,8 +190,9 @@ module.exports = routeUtils = (() => {
                 let isHeartPointsCompleted = false;
                 let isStepsCompleted = false;
                 let ts = this.getTimeStamp();
-                queryString = 'INSERT INTO public."GoalsCompleted"("userId","isStepsCompleted", "isHeartPointsCompleted","ts")VALUES ($1, $2, $3, $4) RETURNING "userId"';
-                let queryValues = [userId, isStepsCompleted, isHeartPointsCompleted, ts];
+                let currentStreak = 0;
+                queryString = 'INSERT INTO public."GoalsCompleted"("userId","isStepsCompleted", "isHeartPointsCompleted","ts", "currentStreak")VALUES ($1, $2, $3, $4) RETURNING "userId"';
+                let queryValues = [userId, isStepsCompleted, isHeartPointsCompleted, ts, currentStreak];
                 result = await db.query(queryString, queryValues);
             }
         }

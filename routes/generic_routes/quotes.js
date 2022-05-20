@@ -8,4 +8,11 @@ router.get('/', async(req, res) => {
     res.send(rows);
 });
 
+router.post('/', async(req, res) => {
+    const queryString = 'INSERT INTO public."Quotes"("quote")VALUES ($1) RETURNING "id"';
+    const queryValues = [req.query.quote];
+    const {rows} = await db.query(queryString, queryValues);
+    res.send(rows);
+});
+
 module.exports = router;

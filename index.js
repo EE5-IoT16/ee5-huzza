@@ -10,8 +10,8 @@ app.listen(process.env.PORT || port, () => {
     console.log(`Example app listening on port ${port}`);
 });
 
-cron.schedule('0 0 22 * * *', async () => {
-    console.log("Adding Empty Steps Everyday at 23:00 " + new Date());
+cron.schedule('0 0 7 * * *', async () => {
+    console.log("Adding Empty Steps Everyday at 07:00 " + new Date());
     await routerUtils.postEmptySteps();
     await routerUtils.postEmptyHeartPoints();
     await routerUtils.postEmptyGoalsCompleted();
