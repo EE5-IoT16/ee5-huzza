@@ -55,7 +55,7 @@ module.exports = routeUtils = (() => {
 
         ts.start += date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":00";
 
-        let tomorrow = new Date(Date.now() - 10 * 60 * 1000);
+        let tomorrow = new Date(Date.now() - 9 * 60 * 1000);
         ts.end += tomorrow.getFullYear() + "-" + (tomorrow.getMonth() + 1) + "-" + tomorrow.getDate() + " " + tomorrow.getHours() + ":" + tomorrow.getMinutes() + ":00";
 
         return ts;
