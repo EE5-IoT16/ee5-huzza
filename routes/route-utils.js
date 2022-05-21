@@ -191,7 +191,7 @@ module.exports = routeUtils = (() => {
                 let isStepsCompleted = false;
                 let ts = this.getTimeStamp();
                 let currentStreak = 0;
-                queryString = 'INSERT INTO public."GoalsCompleted"("userId","isStepsCompleted", "isHeartPointsCompleted","ts", "currentStreak")VALUES ($1, $2, $3, $4) RETURNING "userId"';
+                queryString = 'INSERT INTO public."GoalsCompleted"("userId","isStepsCompleted", "isHeartPointsCompleted","ts", "currentStreak")VALUES ($1, $2, $3, $4, $5) RETURNING "userId"';
                 let queryValues = [userId, isStepsCompleted, isHeartPointsCompleted, ts, currentStreak];
                 result = await db.query(queryString, queryValues);
             }
