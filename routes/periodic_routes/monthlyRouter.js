@@ -16,7 +16,16 @@ router.get('/steps/:userId', async (req, res) => {
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getMonthRange();
     const userId = req.params.userId;
-    const result = routerUtils.getStepsWithInterval(userId, ts);
+    const result = await routerUtils.getStepsWithInterval(userId, ts);
+
+    res.send(result);
+});
+
+router.get('/heartPoints/:userId', async (req, res) => {
+    let routerUtils = new RouterUtils();
+    const ts = routerUtils.getMonthRange();
+    const userId = req.params.userId;
+    const result = await routerUtils.getHeartPointsWithInterval(userId, ts);
 
     res.send(result);
 });
