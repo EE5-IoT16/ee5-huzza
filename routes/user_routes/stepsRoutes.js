@@ -18,7 +18,7 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
     let result;
-    const step = req.query.steps;
+    let step = req.query.steps;
 
     let routerUtils = new RouterUtils();
     const ts = routerUtils.getTimeStamp();
@@ -31,7 +31,8 @@ router.post('/', async (req, res, next) => {
         result = await db.query(queryString);
         if (result.rows.length > 0) {
             queryString = 'UPDATE public."Steps" SET steps = $1 WHERE id= $2 RETURNING "userId"';
-            result = await db.query(queryString, [parseInt(step), result.rows[0].id]);
+            step = parseInt(step) + parseInt(result.rows[0].steps);
+            result = await db.query(queryString, [step, result.rows[0].id]);
             result = result.rows;
         }
         else {
