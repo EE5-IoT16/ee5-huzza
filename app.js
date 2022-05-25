@@ -1,4 +1,5 @@
 var express = require('express');
+var errorHandler = require('./routes/generic_routes/errorHandler');
 
 // generic_routes
 var indexRouter = require('./routes/generic_routes/index');
@@ -52,6 +53,7 @@ app.use('/tenMinutes', tenMinutesRouter);
 app.use('/heartPoints', heartPoints);
 app.use('/quotes', quotesRouter);
 
+app.use(errorHandler);
 app.use('*', errorRouter);
 
 module.exports = app;
