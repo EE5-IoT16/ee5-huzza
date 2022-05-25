@@ -39,8 +39,7 @@ router.get('/:name', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-    try {
-        const userId = req.query.userId;
+    try {        
         const name = req.query.name;
         const surname = req.query.surname;
         const email = req.query.email;
@@ -49,8 +48,8 @@ router.post('/', async (req, res, next) => {
         let routerUtils = new RouterUtils();
         const ts = routerUtils.getTimeStamp();
 
-        const queryString = 'INSERT INTO public."User"("userId","name" ,"surname", "ts", "email", "passcode") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "userId"';
-        const queryValues = [userId, name, surname, ts, email, passcode];
+        const queryString = 'INSERT INTO public."User"("name" ,"surname", "ts", "email", "passcode") VALUES ($1, $2, $3, $4, $5) RETURNING "userId"';
+        const queryValues = [name, surname, ts, email, passcode];
 
         const { rows } = await db.query(queryString, queryValues);
         res.send(rows);

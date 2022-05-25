@@ -19,3 +19,6 @@ ALTER SEQUENCE "Gyroscope_id_seq" RENAME TO "Falls_id_seq";
 DROP SEQUENCE "UserPhysicalData_id_seq";
 
 ALTER TABLE public."Activities" ALTER COLUMN id SET DEFAULT 0;
+
+-- To drop sequence as well
+ALTER TABLE public."Steps" ALTER COLUMN id DROP IDENTITY;

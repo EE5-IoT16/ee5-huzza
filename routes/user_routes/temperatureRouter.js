@@ -31,7 +31,7 @@ router.post('/', async (req, res, next) => {
         let temperature = req.query.temperature;
         temperature = temperature.replace(/\s/g, "");
         temperature = parseInt(temperature);
-        temperature = 21.0 + (temperature - 333.87 * 6) / 333.87;
+        temperature = 29.0 + (temperature - 333.87 * 6) / 333.87;
         temperature = temperature.toFixed(2);
 
         let routerUtils = new RouterUtils();
