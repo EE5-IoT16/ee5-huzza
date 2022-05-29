@@ -59,14 +59,14 @@ router.put('/', async (req, res, next) => {
                 if (req.query.dailySteps) {
                     dailySteps = req.query.dailySteps;
                     queryValues.push(dailySteps);
-                    queryString += "dailySteps = $" + parameterCounter + " ,"
+                    queryString += '"dailySteps" = $' + parameterCounter + " ,"
                     parameterCounter++;
                 }
 
                 if (req.query.dailyHeartP) {
                     dailyHeartP = req.query.dailyHeartP;
                     queryValues.push(dailyHeartP);
-                    queryString += "dailyHeartPoints = $" + parameterCounter + " ,"
+                    queryString += '"dailyHeartPoints" = $' + parameterCounter + " ,"
                     parameterCounter++;
                 }
 
