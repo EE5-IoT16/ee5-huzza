@@ -49,7 +49,7 @@ router.put('/', async (req, res, next) => {
         if (req.query.userId) {
             userId = req.query.userId;
 
-            let queryString = 'SELECT * FROM "Goals" WHERE "userId"=' + req.query.id;
+            let queryString = 'SELECT * FROM "Goals" WHERE "userId"=' + req.query.userId;
             const { rows } = await db.query(queryString);
 
             if (rows.length > 0) {
