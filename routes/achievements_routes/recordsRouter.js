@@ -131,7 +131,7 @@ router.post('/', async (req, res, next) => {
                     returnValue = result.rows;
                 }
                 else {
-                    returnValue = {};
+                    returnValue = [];
                 }
             }
             else {
@@ -144,7 +144,7 @@ router.post('/', async (req, res, next) => {
 
         }
         else {
-            returnValue = {};
+            returnValue = [];
         }
 
         res.send(returnValue);

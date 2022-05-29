@@ -102,11 +102,11 @@ router.put('/', async (req, res, next) => {
                 returnValue = response;
             }
             else {
-                returnValue = {};
+                returnValue = [];
             }
         }
         else {
-            returnValue = {};
+            returnValue = [];
         }
 
         res.send(returnValue);

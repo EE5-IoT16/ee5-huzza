@@ -94,7 +94,7 @@ router.put('/', async (req, res, next) => {
             }
         }
         else {
-            returnValue = {};
+            returnValue = [];
         }
 
         res.send(returnValue);

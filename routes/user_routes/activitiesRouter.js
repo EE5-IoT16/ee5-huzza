@@ -87,7 +87,7 @@ router.post('/', async (req, res, next) => {
             returnResult = result.rows;
         }
         else {
-            returnResult = {};
+            returnResult = [];
         }
         res.send(returnResult);
     }
