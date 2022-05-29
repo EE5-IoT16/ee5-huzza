@@ -94,7 +94,7 @@ router.put('/', async (req, res, next) => {
             }
         }
         else {
-            returnValue = "userId is not provided.";
+            returnValue = {};
         }
 
         res.send(returnValue);

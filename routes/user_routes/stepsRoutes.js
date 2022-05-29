@@ -47,7 +47,7 @@ router.post('/', async (req, res, next) => {
                 result = result.rows;
             }
             else {
-                result = "No userId provided.";
+                result = {};
             }
             res.send(result.rows);
         }

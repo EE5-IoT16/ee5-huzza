@@ -102,11 +102,11 @@ router.put('/', async (req, res, next) => {
                 returnValue = response;
             }
             else {
-                returnValue = "No value is changed.";
+                returnValue = {};
             }
         }
         else {
-            returnValue = "profileId is not provided.";
+            returnValue = {};
         }
 
         res.send(returnValue);
