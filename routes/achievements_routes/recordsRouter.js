@@ -64,7 +64,14 @@ router.post('/', async (req, res, next) => {
             let queryValues = [userId];
             result = await db.query(queryString, queryValues);
 
-            const maxStreak = Math.max(...result.rows.map(o => o.currentStreak));
+            let maxStreak = 0;
+            if (result.rows.length > 0){
+                maxStreak = Math.max(...result.rows.map(o => o.currentStreak));
+            }
+            else{
+                maxStreak = 0;
+            }
+            
 
             queryString = 'SELECT * FROM public."Records" WHERE "userId" = $1';
             queryValues = [userId];
