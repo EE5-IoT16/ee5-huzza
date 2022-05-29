@@ -48,32 +48,49 @@ router.put('/', async (req, res, next) => {
 
         if (req.query.userId) {
             userId = req.query.userId;
-            let queryString = 'UPDATE public."Goals" SET ';
 
-            if (req.query.dailySteps) {
-                dailySteps = req.query.dailySteps;
-                queryValues.push(dailySteps);
-                queryString += "dailySteps = $" + parameterCounter + " ,"
-                parameterCounter++;
-            }
+            let queryString = 'SELECT * FROM "Goals" WHERE "userId"=' + req.params.id;
+            const { rows } = await db.query(queryString);
 
-            if (req.query.dailyHeartP) {
-                dailyHeartP = req.query.dailyHeartP;
-                queryValues.push(dailyHeartP);
-                queryString += "dailyHeartPoints = $" + parameterCounter + " ,"
-                parameterCounter++;
-            }
+            if (rows.length > 0) {
 
-            if (queryValues.length > 0) {
-                queryString = queryString.replace(/,*$/, "");
-                queryString += 'WHERE "userId" = $' + parameterCounter + ' RETURNING "userId"';
-                queryValues.push(userId);
+                queryString = 'UPDATE public."Goals" SET ';
 
-                const { response } = await db.query(queryString, queryValues);
-                returnValue = response;
+                if (req.query.dailySteps) {
+                    dailySteps = req.query.dailySteps;
+                    queryValues.push(dailySteps);
+                    queryString += "dailySteps = $" + parameterCounter + " ,"
+                    parameterCounter++;
+                }
+
+                if (req.query.dailyHeartP) {
+                    dailyHeartP = req.query.dailyHeartP;
+                    queryValues.push(dailyHeartP);
+                    queryString += "dailyHeartPoints = $" + parameterCounter + " ,"
+                    parameterCounter++;
+                }
+
+                if (queryValues.length > 0) {
+                    queryString = queryString.replace(/,*$/, "");
+                    queryString += 'WHERE "userId" = $' + parameterCounter + ' RETURNING "userId"';
+                    queryValues.push(userId);
+
+                    const { response } = await db.query(queryString, queryValues);
+                    returnValue = response;
+                }
             }
             else {
-                returnValue = "No value is changed.";
+                let routerUtils = new RouterUtils();
+                const ts = routerUtils.getTimeStamp();                
+                userId = req.query.userId;
+                dailySteps = req.query.dailySteps;
+                dailyHeartP = req.query.dailyHeartP;
+
+                queryString = 'INSERT INTO public."Goals"("userId","ts", "dailySteps", "dailyHeartPoints")VALUES ($1, $2, $3, $4) RETURNING "userId"';
+                queryValues = [userId, ts, dailySteps, dailyHeartP];
+
+                returnValue = await db.query(queryString, queryValues);
+                returnValue = returnValue.rows;
             }
         }
         else {
