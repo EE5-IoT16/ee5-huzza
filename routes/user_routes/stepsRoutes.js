@@ -18,16 +18,8 @@ router.get('/:id', async (req, res, next) => {
     try {
         let queryString = 'SELECT * FROM "Steps"';
         queryString += 'WHERE "userId"=' + req.params.id;
-        var result;
-        await db.query(queryString).then(res => {
-            if (res.rows.length > 0) {
-                result = res.rows;
-            }
-        }).catch(e => {
-            console.log(e);
-            result = e;
-        });
-        res.send(result);
+        let {rows} = await db.query(queryString);
+        res.send(rows);
     }
     catch (err) {
         next(err);
