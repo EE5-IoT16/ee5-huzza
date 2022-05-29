@@ -120,16 +120,19 @@ router.put('/', async (req, res, next) => {
                 userId = req.query.userId;
                 weight = req.query.weight;
                 height = req.query.height;
-                weight = weight.toFixed(2);
-                height = height.toFixed(2);
+                weight = parseInt(weight).toFixed(2);
+                height = parseInt(height).toFixed(2);
 
-                age = req.query.age;
+                age = parseInt(req.query.age);
                 gender = req.query.gender;
 
                 let bmi = req.query.bmi;
                 let rmr = req.query.rmr;
-                bmi = bmi.toFixed(2);
-                rmr = rmr.toFixed(2);
+                bmi = parseInt(bmi).toFixed(2);
+                rmr = parseInt(rmr).toFixed(2);
+
+                if (isNaN(bmi)) {bmi = 0;}
+                if (isNaN(rmr)) {rmr = 0;}
 
                 let maxHeartRate = 205.8 - (0.685 * age);
                 maxHeartRate = maxHeartRate.toFixed(2);
