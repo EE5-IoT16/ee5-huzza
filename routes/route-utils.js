@@ -102,10 +102,10 @@ module.exports = routeUtils = (() => {
         let caloriesBurned = 0;
 
         // Need new formula that uses time spend as well;
-        if (gender = "male") {
+        if (gender = "Male") {
             caloriesBurned = 66 + (6.23 * 2.2 * weight) + (12.7 * 0.3937 * height) - (4.7 * age);
         }
-        else if (gender = "female") {
+        else if (gender = "Female") {
             caloriesBurned = 655 + (4.35 * 2.2 * weight) + (4.7 * 0.3937 * height) - (4.7 * age);
         }
         else {
@@ -119,10 +119,10 @@ module.exports = routeUtils = (() => {
     routeUtils.prototype.calculateDistanceCovered = function (steps, height, gender) {
         let distanceCovered;
 
-        if (gender = "male") {
+        if (gender = "Male") {
             distanceCovered = 0.762 * steps;
         }
-        else if (gender = "female") {
+        else if (gender = "Female") {
             distanceCovered = 0.67 * steps;
         }
         else {
