@@ -69,9 +69,20 @@ router.post('/', async (req, res, next) => {
                 }
                 heartPoints = heartPoints.toFixed(2);
 
-                queryString = 'INSERT INTO public."HeartPoints"("userId", "heartPoint", "ts")VALUES ($1, $2, $3) RETURNING "userId"';
-                queryValues = [userId, heartPoints, endTime];
-                await db.query(queryString, queryValues);
+                ts = routerUtils.getDayRange();
+                queryString = 'SELECT * FROM public."HeartPoints" WHERE "userId"=' + userId + ' AND  ts BETWEEN SYMMETRIC \'' + ts.start + '\' AND \'' + ts.end + '\'';
+                let heartPointsResult = await db.query(queryString);
+
+                if (heartPointsResult.rows.length > 0) {
+                    queryString = 'UPDATE public."HeartPoints" SET "heartPoint"=$1 WHERE id=$2';
+                    queryValues = [parseInt(heartPoints) + heartPointsResult.rows[0].heartPoint, heartPointsResult.rows[0].id];
+                    await db.query(queryString, queryValues);
+                }
+                else {
+                    queryString = 'INSERT INTO public."HeartPoints"("userId", "heartPoint", "ts")VALUES ($1, $2, $3) RETURNING "userId"';
+                    queryValues = [userId, heartPoints, endTime];
+                    await db.query(queryString, queryValues);
+                }
 
                 queryString = 'UPDATE public."Activities" SET "endTime"=$1, "caloriesBurned"=$2, "maxHeartRate"=$3, "averageHeartRate"=$4, "steps"=$5, "distanceCovered"=$6 WHERE "userId"=$7 AND "startTime"=$8 RETURNING "userId";';
                 queryValues = [endTime, caloriesBurned, maxHeartRate, averageHeartRate, steps, distanceCovered, userId, startTime];
