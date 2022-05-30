@@ -37,7 +37,9 @@ router.post('/', async (req, res, next) => {
             const startTime = req.query.startTime;
             const endTime = req.query.endTime;
 
-            let steps = await routerUtils.getMaxStepWithInterval('day', userId);
+            var ts = routerUtils.getDayRange();
+            queryString = 'SELECT * FROM public."Steps" WHERE "userId"=' + userId + ' AND  ts BETWEEN SYMMETRIC \'' + ts.start + '\' AND \'' + ts.end + '\'';
+            let steps = await db.query(queryString);
 
             if (startTime && !endTime) {
                 queryString = 'INSERT INTO public."Activities"("userId", "startTime", "steps")VALUES ($1, $2, $3) RETURNING "userId"';
@@ -50,7 +52,7 @@ router.post('/', async (req, res, next) => {
                 // Get todays activity
                 queryString = 'SELECT steps FROM public."Activities" WHERE "userId"=' + userId + ' AND "startTime"= \'' + startTime + '\';';
                 result = await db.query(queryString);
-                steps = steps[0].totalstep - result.rows[0].steps;
+                steps = steps.rows[0].steps - result.rows[0].steps;
                 const distanceCovered = routerUtils.calculateDistanceCovered(steps, userPhysicalData[0].height, userPhysicalData[0].gender,)
 
                 result = await routerUtils.getHeartRateWithInterval(userId, { "start": startTime, "end": endTime });
@@ -62,10 +64,10 @@ router.post('/', async (req, res, next) => {
                 let heartRateIntensity = (averageHeartRate / userPhysicalData[0].maxHeartRate) * 100;
                 let heartPoints = 0;
                 if (heartRateIntensity >= 50 && heartRateIntensity < 70) {
-                    heartPoints = (finalTime % 60) * 1;
+                    heartPoints = (finalTime / 60) * 1;
                 }
                 else if (heartRateIntensity >= 70) {
-                    heartPoints = (finalTime % 60) * 2;
+                    heartPoints = (finalTime / 60) * 2;
                 }
                 heartPoints = heartPoints.toFixed(2);
 
