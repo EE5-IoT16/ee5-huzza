@@ -57,21 +57,15 @@ router.post('/', async (req, res, next) => {
                 const averageHeartRate = result.reduce((total, next) => total + next.bpm, 0) / result.length;
                 const maxHeartRate = Math.max(...result.map(o => o.bpm));
 
-                let startTimeHours = startTime.split("T")[1];
-                let startTimeHoursArray = startTimeHours.split(":");
-
-                let endTimeHours = endTime.split("T")[1];
-                let endTimeHoursArray = endTimeHours.split(":");
-
-                let finalTime = Math.abs(parseInt(endTimeHoursArray[0]) - parseInt(startTimeHoursArray[0])) > 1 ? (Math.abs(parseInt(endTimeHoursArray[0]) - parseInt(startTimeHoursArray[0])) - 1) * 60 : 0 + Math.abs(parseInt(endTimeHoursArray[1]) + 60 - parseInt(startTimeHoursArray[1]));
+                let finalTime = req.query.duration;
 
                 let heartRateIntensity = (averageHeartRate / userPhysicalData[0].maxHeartRate) * 100;
                 let heartPoints = 0;
                 if (heartRateIntensity >= 50 && heartRateIntensity < 70) {
-                    heartPoints = finalTime * 1;
+                    heartPoints = (finalTime % 60) * 1;
                 }
                 else if (heartRateIntensity >= 70) {
-                    heartPoints = finalTime * 2;
+                    heartPoints = (finalTime % 60) * 2;
                 }
                 heartPoints = heartPoints.toFixed(2);
 

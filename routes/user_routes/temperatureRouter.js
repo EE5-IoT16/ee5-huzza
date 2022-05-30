@@ -18,6 +18,7 @@ router.get('/:id', async (req, res, next) => {
     try {
         let queryString = 'SELECT * FROM "Temperature"';
         queryString += 'WHERE "userId"=' + req.params.id;
+        queryString += 'ORDER BY ts DESC LIMIT 1';
         const { rows } = await db.query(queryString);
         res.send(rows);
     }
