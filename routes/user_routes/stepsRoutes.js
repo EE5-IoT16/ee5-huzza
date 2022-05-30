@@ -18,6 +18,7 @@ router.get('/:id', async (req, res, next) => {
     try {
         let queryString = 'SELECT * FROM "Steps"';
         queryString += 'WHERE "userId"=' + req.params.id;
+        queryString += 'ORDER BY id ASC';
         let {rows} = await db.query(queryString);
         res.send(rows);
     }
