@@ -43,7 +43,7 @@ router.post('/', async (req, res, next) => {
 
             if (startTime && !endTime) {
                 queryString = 'INSERT INTO public."Activities"("userId", "startTime", "steps")VALUES ($1, $2, $3) RETURNING "userId"';
-                queryValues = [userId, startTime, steps[0].totalstep];
+                queryValues = [userId, startTime, steps.rows[0].steps];
             }
             else if (startTime && endTime) {
                 const userPhysicalData = await routerUtils.getUserPhysicalDataWithId(userId);
